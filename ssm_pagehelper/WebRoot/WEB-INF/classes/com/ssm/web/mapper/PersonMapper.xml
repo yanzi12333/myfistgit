@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 如果需要访问这条sql语，需要通过其唯一标识访问到 唯一标识就是 namespace+id的组合 -->
+<mapper namespace="com.ssm.web.mapper.PersonMapper">
+
+	<resultMap id="BaseResultMap" type="com.ssm.web.entity.Person">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="age" property="age" jdbcType="INTEGER" />
+		<result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.ssm.web.entity.Person"
+		extends="BaseResultMap">
+		<result column="detail" property="detail" jdbcType="LONGVARCHAR" />
+	</resultMap>
+
+	<insert id="insert" parameterType="com.ssm.web.entity.Person"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		t_person(id,name,age,birthday)
+		values(#{id},#{name},#{age},#{birthday,jdbcType=DATE})
+	</insert>
+	<update id="update" parameterType="com.ssm.web.entity.Person"> 
+		update t_person set
+		name=#{name},age=#{age},birthday=#{birthday}
+		where id=#{id}
+	</update>
+	<!-- 传单一类型时写什么都可以取得参数的值 -->
+	<delete id="delete" parameterType="int">
+		delete from t_person where id=#{id}
+	</delete>
+	<!-- 返回的结果集合中的元素类型 无参构造器打开 setter不可缺
+	目前字段命名与属性命名一致 反之??? -->
+	<select id="queryAll" resultType="com.ssm.web.entity.Person"> 
+		select * from t_person
+	</select>
+	<select id="select_one" resultType="com.ssm.web.entity.Person" parameterType="int">
+		select * from t_person where id=#{id}
+	</select>
+	<select id="select_likeName" resultType="com.ssm.web.entity.Person" parameterType="string">
+		select * from t_person where
+		name like #{x}
+	</select>
+	<select id="select_likeNameAndAge" resultType="com.ssm.web.entity.Person"
+		parameterType="com.ssm.web.entity.Person"> select * from t_person where name like #{name} and
+		age > #{age}
+	</select>
+	<select id="select_likeNameAndAgeBetween" resultType="com.ssm.web.entity.Person"
+		parameterType="map"> select * from t_person where name like #{name} and age
+		between #{age1} and #{age2}
+	</select>
+</mapper>
